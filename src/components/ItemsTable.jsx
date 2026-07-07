@@ -6,7 +6,16 @@ const inr = (n) =>
     ? Number(n).toLocaleString("en-IN", { maximumFractionDigits: 2 })
     : "";
 
-export default function ItemsTable({ items, setItems }) {
+export default function ItemsTable({
+  items,
+  setItems,
+  transport,
+  setTransport,
+  sqftLabel,
+  setSqftLabel,
+  rateLabel,
+  setRateLabel,
+}) {
   const updateItem = (id, field, value) => {
     setItems((prev) =>
       prev.map((item) => {
@@ -23,7 +32,7 @@ export default function ItemsTable({ items, setItems }) {
           next.autoTotal = false;
         }
         return next;
-      })
+      }),
     );
   };
 
@@ -45,7 +54,12 @@ export default function ItemsTable({ items, setItems }) {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
-  const grandTotal = items.reduce((sum, i) => sum + (parseFloat(i.total) || 0), 0);
+  const itemsTotal = items.reduce(
+    (sum, i) => sum + (parseFloat(i.total) || 0),
+    0,
+  );
+
+  const grandTotal = itemsTotal + (parseFloat(transport) || 0);
 
   return (
     <div className="bg-white px-4 sm:px-6 py-5 border-b border-slate-200">
@@ -65,7 +79,9 @@ export default function ItemsTable({ items, setItems }) {
               </span>
               <textarea
                 value={item.particulars}
-                onChange={(e) => updateItem(item.id, "particulars", e.target.value)}
+                onChange={(e) =>
+                  updateItem(item.id, "particulars", e.target.value)
+                }
                 placeholder="Describe the item — grade, finish, location..."
                 rows={2}
                 className="flex-1 resize-none rounded-lg border border-slate-300 px-3 py-2 text-[15px] focus:outline-none focus:ring-2 focus:ring-navy-800 focus:border-navy-800"
@@ -75,7 +91,7 @@ export default function ItemsTable({ items, setItems }) {
                   updateItem(
                     item.id,
                     "particulars",
-                    (item.particulars ? item.particulars + " " : "") + text
+                    (item.particulars ? item.particulars + " " : "") + text,
                   )
                 }
                 className="w-10 h-10 mt-0.5"
@@ -149,6 +165,48 @@ export default function ItemsTable({ items, setItems }) {
       >
         <Plus size={18} /> Add Item
       </button>
+      <div className="mt-4 grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-sm font-medium text-slate-600">
+            Column 1 Heading
+          </label>
+
+          <input
+            type="text"
+            value={sqftLabel}
+            onChange={(e) => setSqftLabel(e.target.value)}
+            placeholder="Apx Sqft"
+            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2"
+          />
+        </div>
+
+        <div>
+          <label className="text-sm font-medium text-slate-600">
+            Column 2 Heading
+          </label>
+
+          <input
+            type="text"
+            value={rateLabel}
+            onChange={(e) => setRateLabel(e.target.value)}
+            placeholder="Per SQFT"
+            className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2"
+          />
+        </div>
+      </div>
+      <div className="mt-4 rounded-lg border border-slate-300 p-3">
+        <label className="text-sm font-medium text-slate-600">
+          Transport Charge (₹)
+        </label>
+
+        <input
+          type="number"
+          value={transport}
+          onChange={(e) => setTransport(e.target.value)}
+          placeholder="0"
+          className="mt-2 w-full rounded-lg border border-slate-300 px-3 py-2"
+        />
+      </div>
 
       {items.length > 0 && (
         <div className="mt-4 flex items-center justify-between rounded-lg bg-navy-900 text-white px-4 py-3">

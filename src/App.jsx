@@ -9,6 +9,8 @@ import PrintableQuote from "./components/PrintableQuote";
 const today = () => new Date().toISOString().slice(0, 10);
 
 export default function App() {
+  const [sqftLabel, setSqftLabel] = useState("Apx Sqft");
+  const [rateLabel, setRateLabel] = useState("Per SQFT");
   const [client, setClient] = useState({
     name: "",
     date: today(),
@@ -17,6 +19,7 @@ export default function App() {
   });
 
   const [items, setItems] = useState([]);
+  const [transport, setTransport] = useState("");
 
   const [terms, setTerms] = useState({
     contactName: "Arasu",
@@ -30,7 +33,16 @@ export default function App() {
       <div className="flex-1 w-full max-w-md mx-auto bg-white shadow-sm">
         <QuoteHeader />
         <ClientInfo client={client} setClient={setClient} />
-        <ItemsTable items={items} setItems={setItems} />
+        <ItemsTable
+          items={items}
+          setItems={setItems}
+          transport={transport}
+          setTransport={setTransport}
+          sqftLabel={sqftLabel}
+          setSqftLabel={setSqftLabel}
+          rateLabel={rateLabel}
+          setRateLabel={setRateLabel}
+        />
         <TermsFooter terms={terms} setTerms={setTerms} />
       </div>
 
@@ -44,7 +56,15 @@ export default function App() {
 
       {/* Off-screen, full-size layout used only to generate the PDF. */}
       <div style={{ position: "fixed", top: 0, left: "-9999px" }}>
-        <PrintableQuote ref={printableRef} client={client} items={items} terms={terms} />
+        <PrintableQuote
+          ref={printableRef}
+          client={client}
+          items={items}
+          terms={terms}
+          transport={transport}
+          sqftLabel={sqftLabel}
+          rateLabel={rateLabel}
+        />
       </div>
     </div>
   );
